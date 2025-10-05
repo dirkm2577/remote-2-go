@@ -1,0 +1,21 @@
+{
+  "name": "remote2go-scripts",
+  "version": "1.0.0",
+  "description": "Remote2Go - Google Places Integration Scripts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test-google-api": "node scripts/test-google-api.js",
+    "backfill-photos": "node scripts/fetch-place-photos.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.58.0",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

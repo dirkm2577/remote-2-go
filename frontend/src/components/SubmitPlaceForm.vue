@@ -290,6 +290,14 @@
           <div class="mt-2 text-sm text-green-700">
             <p>Thank you for your submission! We'll review it and add it to our directory if it meets our criteria.</p>
           </div>
+          <div class="mt-4">
+            <button
+              @click="goToHome"
+              class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              Return to Home
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -312,8 +320,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import type { PlaceSubmission } from '../types/Place'
 
+const router = useRouter()
 const currentStep = ref(1)
 const loading = ref(false)
 const submitted = ref(false)
@@ -383,6 +393,10 @@ const nextStep = () => {
   }
 }
 
+const goToHome = () => {
+  router.push('/')
+}
+
 const handleSubmit = async () => {
   loading.value = true
   error.value = null
@@ -407,12 +421,6 @@ const handleSubmit = async () => {
     }
 
     submitted.value = true
-    
-    // Reset form after successful submission
-    setTimeout(() => {
-      resetForm()
-    }, 3000)
-    
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Failed to submit place'
   } finally {

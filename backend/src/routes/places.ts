@@ -13,6 +13,7 @@ router.get('/', async (req: Request, res: Response) => {
       noiseLevel: req.query.noiseLevel as string,
       powerOutlets: req.query.powerOutlets as string,
       priceLevel: req.query.priceLevel as string,
+      city: req.query.city as string,
     }
 
     // Remove undefined values

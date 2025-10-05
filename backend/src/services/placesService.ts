@@ -32,6 +32,9 @@ export class PlacesService {
       if (filters?.priceLevel) {
         query = query.eq('price_level', filters.priceLevel)
       }
+      if (filters?.city) {
+        query = query.ilike('city', `%${filters.city}%`)
+      }
 
       const { data, error } = await query
 

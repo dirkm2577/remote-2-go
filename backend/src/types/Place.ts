@@ -29,6 +29,7 @@ export interface PlaceFilters {
   noiseLevel?: string
   powerOutlets?: boolean
   priceLevel?: string
+  city?: string
 }
 
 export interface PlaceSubmission {

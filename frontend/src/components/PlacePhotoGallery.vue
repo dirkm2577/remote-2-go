@@ -207,8 +207,8 @@ export default {
 
     // Computed properties
     const processedPhotos = computed(() => {
-      console.log('PlacePhotoGallery - Processing photos for:', props.place.name)
-      console.log('PlacePhotoGallery - Raw photos data:', props.place.photos)
+      // console.log('PlacePhotoGallery - Processing photos for:', props.place.name)
+      // console.log('PlacePhotoGallery - Raw photos data:', props.place.photos)
       
       if (!props.place.photos || !Array.isArray(props.place.photos)) {
         console.log('PlacePhotoGallery - No photos array found')
@@ -216,10 +216,10 @@ export default {
       }
       
       const photos = props.place.photos.slice(0, props.maxPhotos)
-      console.log('PlacePhotoGallery - Sliced photos:', photos)
+      // console.log('PlacePhotoGallery - Sliced photos:', photos)
       
       const processed = getPhotoUrls(photos, 800)
-      console.log('PlacePhotoGallery - Processed photos:', processed)
+      // console.log('PlacePhotoGallery - Processed photos:', processed)
       
       return processed
     })

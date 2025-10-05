@@ -63,6 +63,18 @@
               </div>
             </div>
 
+            <!-- City Filter -->
+            <div class="mb-6">
+              <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
+              <input
+                v-model="filters.city"
+                type="text"
+                id="city"
+                class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                placeholder="Enter city name..."
+              />
+            </div>
+
             <!-- Other Filters -->
             <div class="space-y-4">
               <div>
@@ -201,7 +213,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { usePlacesStore } from '../stores/places'
-import type { Place } from '../types/Place'
 import NewsletterSignup from '../components/NewsletterSignup.vue'
 import PlacePhotoGallery from '../components/PlacePhotoGallery.vue'
 
@@ -212,7 +223,8 @@ const filters = ref({
   wifiQuality: '',
   noiseLevel: '',
   powerOutlets: '',
-  priceLevel: ''
+  priceLevel: '',
+  city: ''
 })
 
 // Use the places directly from store instead of filtering on client
@@ -226,7 +238,8 @@ const clearFilters = () => {
     wifiQuality: '',
     noiseLevel: '',
     powerOutlets: '',
-    priceLevel: ''
+    priceLevel: '',
+    city: ''
   }
   // Refetch places with no filters
   placesStore.fetchPlaces()
@@ -240,6 +253,7 @@ watch(filters, () => {
     noiseLevel: filters.value.noiseLevel || undefined,
     powerOutlets: filters.value.powerOutlets || undefined,
     priceLevel: filters.value.priceLevel || undefined,
+    city: filters.value.city || undefined,
   }
   
   // Remove undefined values

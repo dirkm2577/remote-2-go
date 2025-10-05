@@ -19,6 +19,7 @@ export const usePlacesStore = defineStore('places', () => {
       if (filters?.noiseLevel) params.append('noiseLevel', filters.noiseLevel)
       if (filters?.powerOutlets !== undefined) params.append('powerOutlets', filters.powerOutlets.toString())
       if (filters?.priceLevel) params.append('priceLevel', filters.priceLevel)
+      if (filters?.city) params.append('city', filters.city)
       
       const url = `http://localhost:3001/api/places${params.toString() ? '?' + params.toString() : ''}`
       const response = await fetch(url)
@@ -55,7 +56,9 @@ export const usePlacesStore = defineStore('places', () => {
           verified: true,
           created_by: null,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
+          google_place_id: null,
+          photos: []
         },
         {
           id: '2',
@@ -76,7 +79,9 @@ export const usePlacesStore = defineStore('places', () => {
           verified: true,
           created_by: null,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
+          google_place_id: null,
+          photos: []
         },
         {
           id: '3',
@@ -97,7 +102,9 @@ export const usePlacesStore = defineStore('places', () => {
           verified: true,
           created_by: null,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
+          google_place_id: null,
+          photos: []
         }
       ].filter(place => {
         if (filters?.visitType && place.visit_type !== filters.visitType) return false
@@ -105,6 +112,7 @@ export const usePlacesStore = defineStore('places', () => {
         if (filters?.noiseLevel && place.noise_level !== filters.noiseLevel) return false
         if (filters?.powerOutlets !== undefined && place.power_outlets !== filters.powerOutlets) return false
         if (filters?.priceLevel && place.price_level !== filters.priceLevel) return false
+        if (filters?.city && !place.city.toLowerCase().includes(filters.city.toLowerCase())) return false
         return true
       }) as Place[]
     } finally {

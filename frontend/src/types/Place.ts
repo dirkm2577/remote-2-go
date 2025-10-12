@@ -1,3 +1,5 @@
+import type { OpeningHours } from './OpeningHours'
+
 export interface Place {
   id: string
   name: string
@@ -21,6 +23,9 @@ export interface Place {
   // Google Places API integration
   google_place_id: string | null
   photos: any[] // Array of photo objects from Google Places API
+  // Opening hours
+  opening_hours: OpeningHours | null
+  hours_last_verified_at: string | null
 }
 
 export interface PlaceFilters {
@@ -53,6 +58,8 @@ export interface PlaceSubmission {
   status?: 'pending' | 'approved' | 'rejected'
   admin_notes?: string | null
   created_at?: string
+  // Opening hours (optional for submissions)
+  opening_hours?: OpeningHours | null
 }
 
 export interface NewsletterSignup {

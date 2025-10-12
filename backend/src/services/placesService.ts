@@ -176,7 +176,10 @@ export class PlacesService {
       updated_at: now,
       // Include the new photo columns
       google_place_id: null,
-      photos: []
+      photos: [],
+      // Include the new opening hours columns
+      opening_hours: submission.opening_hours || null,
+      hours_last_verified_at: submission.opening_hours ? now : null
     }
 
     try {

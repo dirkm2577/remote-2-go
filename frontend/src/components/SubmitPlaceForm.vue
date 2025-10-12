@@ -199,6 +199,14 @@
             placeholder="e.g., coffee, food, outdoor_seating"
           />
         </div>
+
+        <!-- Opening Hours -->
+        <div class="border-t pt-6">
+          <OpeningHoursInput v-model="formData.opening_hours" />
+          <p class="text-xs text-gray-500 mt-2">
+            Opening hours are optional but help other remote workers plan their visits.
+          </p>
+        </div>
       </div>
 
       <!-- Step 3: Review -->
@@ -217,6 +225,7 @@
             <div v-if="formData.time_limit"><strong>Time Limit:</strong> {{ formData.time_limit }} minutes</div>
             <div v-if="formData.description"><strong>Description:</strong> {{ formData.description }}</div>
             <div v-if="amenitiesArray.length"><strong>Amenities:</strong> {{ amenitiesArray.join(', ') }}</div>
+            <div v-if="formData.opening_hours"><strong>Opening Hours:</strong> Provided</div>
           </div>
         </div>
 
@@ -322,6 +331,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { PlaceSubmission } from '../types/Place'
+import OpeningHoursInput from './OpeningHoursInput.vue'
 
 const router = useRouter()
 const currentStep = ref(1)
@@ -343,7 +353,8 @@ const formData = ref<Partial<PlaceSubmission>>({
   time_limit: null,
   submitter_name: '',
   submitter_email: '',
-  submission_source: 'web_form'
+  submission_source: 'web_form',
+  opening_hours: null
 })
 
 const visitTypeOptions = [

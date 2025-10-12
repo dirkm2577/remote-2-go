@@ -160,6 +160,14 @@
                 />
               </div>
 
+              <!-- Opening Hours -->
+              <div class="mb-6 border-t pt-6">
+                <OpeningHoursDisplay 
+                  :opening-hours="place.opening_hours"
+                  :last-verified="place.hours_last_verified_at"
+                />
+              </div>
+
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div class="text-center">
                   <div class="text-lg mb-1">📶</div>
@@ -215,6 +223,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { usePlacesStore } from '../stores/places'
 import NewsletterSignup from '../components/NewsletterSignup.vue'
 import PlacePhotoGallery from '../components/PlacePhotoGallery.vue'
+import OpeningHoursDisplay from '../components/OpeningHoursDisplay.vue'
 
 const placesStore = usePlacesStore()
 

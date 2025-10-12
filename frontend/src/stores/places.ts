@@ -58,7 +58,18 @@ export const usePlacesStore = defineStore('places', () => {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           google_place_id: null,
-          photos: []
+          photos: [],
+          opening_hours: {
+            monday: { isOpen: true, openTime: '08:00', closeTime: '20:00' },
+            tuesday: { isOpen: true, openTime: '08:00', closeTime: '20:00' },
+            wednesday: { isOpen: true, openTime: '08:00', closeTime: '20:00' },
+            thursday: { isOpen: true, openTime: '08:00', closeTime: '20:00' },
+            friday: { isOpen: true, openTime: '08:00', closeTime: '20:00' },
+            saturday: { isOpen: true, openTime: '09:00', closeTime: '22:00' },
+            sunday: { isOpen: true, openTime: '09:00', closeTime: '19:00' },
+            specialNotes: 'Kitchen closes 30 minutes before closing time'
+          },
+          hours_last_verified_at: '2024-10-01T10:00:00Z'
         },
         {
           id: '2',
@@ -81,7 +92,18 @@ export const usePlacesStore = defineStore('places', () => {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           google_place_id: null,
-          photos: []
+          photos: [],
+          opening_hours: {
+            monday: { isOpen: true, openTime: '09:00', closeTime: '18:00' },
+            tuesday: { isOpen: true, openTime: '09:00', closeTime: '18:00' },
+            wednesday: { isOpen: true, openTime: '09:00', closeTime: '18:00' },
+            thursday: { isOpen: true, openTime: '09:00', closeTime: '20:00' },
+            friday: { isOpen: true, openTime: '09:00', closeTime: '18:00' },
+            saturday: { isOpen: true, openTime: '10:00', closeTime: '16:00' },
+            sunday: { isOpen: false, openTime: null, closeTime: null },
+            specialNotes: null
+          },
+          hours_last_verified_at: '2024-09-15T14:30:00Z'
         },
         {
           id: '3',
@@ -104,7 +126,18 @@ export const usePlacesStore = defineStore('places', () => {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           google_place_id: null,
-          photos: []
+          photos: [],
+          opening_hours: {
+            monday: { isOpen: true, openTime: '07:00', closeTime: '22:00' },
+            tuesday: { isOpen: true, openTime: '07:00', closeTime: '22:00' },
+            wednesday: { isOpen: true, openTime: '07:00', closeTime: '22:00' },
+            thursday: { isOpen: true, openTime: '07:00', closeTime: '22:00' },
+            friday: { isOpen: true, openTime: '07:00', closeTime: '22:00' },
+            saturday: { isOpen: true, openTime: '09:00', closeTime: '18:00' },
+            sunday: { isOpen: true, openTime: '09:00', closeTime: '18:00' },
+            specialNotes: '24/7 access for premium members'
+          },
+          hours_last_verified_at: '2024-10-05T09:15:00Z'
         }
       ].filter(place => {
         if (filters?.visitType && place.visit_type !== filters.visitType) return false

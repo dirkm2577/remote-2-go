@@ -158,6 +158,33 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
+  const updatePlace = async (id: string, placeData: Partial<Place>): Promise<boolean> => {
+    if (!isAuthenticated.value) return false
+
+    try {
+      const response = await fetch(`${API_BASE}/api/admin/places/${id}`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(placeData),
+      })
+
+      if (response.ok) {
+        await fetchPlaces() // Refresh the places list
+        return true
+      } else if (response.status === 401) {
+        logout()
+        return false
+      } else {
+        error.value = 'Failed to update place'
+        return false
+      }
+    } catch (err) {
+      console.error('Error updating place:', err)
+      error.value = 'Network error'
+      return false
+    }
+  }
+
   const fetchSubmissions = async (): Promise<void> => {
     if (!isAuthenticated.value) return
 
@@ -328,13 +355,14 @@ export const useAdminStore = defineStore('admin', () => {
     submissions,
     subscriptions,
     feedback,
-    
+
     // Actions
     login,
     logout,
     initializeAuth,
     fetchStats,
     fetchPlaces,
+    updatePlace,
     fetchSubmissions,
     updateSubmissionStatus,
     fetchSubscriptions,

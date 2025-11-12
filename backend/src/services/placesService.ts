@@ -204,16 +204,42 @@ export class PlacesService {
   }
 
   /**
+   * Update an existing place
+   */
+  async updatePlace(id: string, placeData: Partial<Place>): Promise<Place> {
+    try {
+      const { data, error } = await supabase!
+        .from('places')
+        .update({
+          ...placeData,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+
+      return data
+    } catch (error) {
+      console.error('Error updating place:', error)
+      throw error
+    }
+  }
+
+  /**
    * Fetch Google Places photos and update the place record
    * This runs asynchronously after place creation and doesn't block the approval process
    */
   private async fetchAndUpdatePhotos(placeId: string, placeName: string, address: string): Promise<void> {
     try {
       console.log(`Fetching photos for place: ${placeName} (${placeId})`)
-      
+
       // Fetch photos from Google Places API
       const photoData = await this.googlePlacesService.fetchPlacePhotos(placeName, address)
-      
+
       if (photoData.google_place_id || photoData.photos.length > 0) {
         // Update the place with photo information
         const { error } = await supabase!
@@ -233,7 +259,7 @@ export class PlacesService {
       } else {
         console.log(`No photos found for place: ${placeName}`)
       }
-      
+
     } catch (error) {
       // Don't throw the error - we don't want photo fetch failures to block place creation
       console.error(`Error fetching photos for place ${placeId}:`, error)

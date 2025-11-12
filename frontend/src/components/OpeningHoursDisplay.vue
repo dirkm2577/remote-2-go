@@ -37,7 +37,8 @@
           </div>
           <div class="text-sm font-medium text-indigo-900">
             <span v-if="todayHours.isOpen && todayHours.openTime && todayHours.closeTime">
-              {{ formatTime(todayHours.openTime) }} - {{ formatTime(todayHours.closeTime) }}
+              <span v-if="is24Hours(todayHours.openTime, todayHours.closeTime)">Open 24 hours</span>
+              <span v-else>{{ formatTime(todayHours.openTime) }} - {{ formatTime(todayHours.closeTime) }}</span>
             </span>
             <span v-else class="text-indigo-600">Closed</span>
           </div>
@@ -86,7 +87,8 @@
             :class="{ 'font-medium text-indigo-900': isToday(day), 'text-gray-600': !isToday(day) }"
           >
             <span v-if="openingHours[day].isOpen && openingHours[day].openTime && openingHours[day].closeTime">
-              {{ formatTime(openingHours[day].openTime!) }} - {{ formatTime(openingHours[day].closeTime!) }}
+              <span v-if="is24Hours(openingHours[day].openTime!, openingHours[day].closeTime!)">Open 24 hours</span>
+              <span v-else>{{ formatTime(openingHours[day].openTime!) }} - {{ formatTime(openingHours[day].closeTime!) }}</span>
             </span>
             <span v-else class="text-gray-500">Closed</span>
           </span>
@@ -163,12 +165,18 @@ const isToday = (day: DayOfWeek): boolean => {
   return day === currentDay.value
 }
 
+const is24Hours = (openTime: string, closeTime: string): boolean => {
+  return openTime === '00:00' && closeTime === '00:00'
+}
+
 const formatTime = (time: string): string => {
   try {
-    const [hours, minutes] = time.split(':')
+    const parts = time.split(':')
+    const hours = parts[0] || '0'
+    const minutes = parts[1] || '00'
     const hour = parseInt(hours, 10)
-    const min = minutes || '00'
-    
+    const min = minutes
+
     if (hour === 0) return `12:${min} AM`
     if (hour < 12) return `${hour}:${min} AM`
     if (hour === 12) return `12:${min} PM`

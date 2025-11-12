@@ -70,6 +70,20 @@ router.get('/places', async (req, res) => {
   }
 })
 
+// Update a place
+router.patch('/places/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const placeData = req.body
+
+    const updatedPlace = await placesService.updatePlace(id, placeData)
+    res.json(updatedPlace)
+  } catch (error) {
+    console.error('Error updating place:', error)
+    res.status(500).json({ error: 'Failed to update place' })
+  }
+})
+
 // Place submissions management
 router.get('/place-submissions', async (req, res) => {
   try {

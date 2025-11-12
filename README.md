@@ -1,6 +1,6 @@
 # Remote2Go MVP - Phase 1
 
-A web application to help remote workers find work-friendly places in Berlin with reliable WiFi, power outlets, and the perfect atmosphere for productivity.
+A web application to help remote workers find work-friendly places in Germany (first) with reliable WiFi, power outlets, and the perfect atmosphere for productivity.
 
 ## 🚀 Features Implemented (Phase 1)
 

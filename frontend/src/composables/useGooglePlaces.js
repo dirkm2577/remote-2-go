@@ -8,10 +8,6 @@ import { ref } from 'vue'
 const API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY
 const PLACES_API_BASE = 'https://places.googleapis.com/v1'
 
-// console.log('useGooglePlaces - import.meta.env:', import.meta.env)
-// console.log('useGooglePlaces - VITE_GOOGLE_PLACES_API_KEY:', import.meta.env.VITE_GOOGLE_PLACES_API_KEY)
-// console.log('useGooglePlaces - API_KEY loaded:', API_KEY ? `${API_KEY.substring(0, 10)}...` : 'NOT FOUND')
-
 export function useGooglePlaces() {
   const loading = ref(false)
   const error = ref(null)
@@ -84,24 +80,19 @@ export function useGooglePlaces() {
    * @returns {string} Photo URL
    */
   function getPhotoUrl(photoName, maxWidth = 800) {
-    // console.log('getPhotoUrl called with:', { photoName, maxWidth, API_KEY: API_KEY ? 'present' : 'missing' })
-    
     if (!photoName) {
-      console.log('getPhotoUrl returning null: no photoName')
       return null
     }
-    
+
     if (!API_KEY) {
-      console.log('getPhotoUrl returning null: no API_KEY')
       return null
     }
 
     // Ensure maxWidth is within reasonable bounds
     const width = Math.min(Math.max(maxWidth, 100), 4800)
-    
+
     // photoName already includes the full path like "places/ChIJ.../photos/..."
     const url = `${PLACES_API_BASE}/${photoName}/media?maxWidthPx=${width}&key=${API_KEY}`
-    // console.log('getPhotoUrl generated URL:', url)
     return url
   }
 
@@ -112,17 +103,13 @@ export function useGooglePlaces() {
    * @returns {Array} Array of processed photo objects with URLs
    */
   function getPhotoUrls(photos, maxWidth = 800) {
-    // console.log('useGooglePlaces - getPhotoUrls called with:', photos)
-    
     if (!photos || !Array.isArray(photos)) {
-      console.log('useGooglePlaces - No valid photos array')
       return []
     }
 
     const result = photos.map(photo => {
       const url = getPhotoUrl(photo.name, maxWidth)
-      // console.log('useGooglePlaces - Generated URL for photo:', photo.name, '→', url)
-      
+
       return {
         url,
         width: photo.widthPx,
@@ -131,9 +118,8 @@ export function useGooglePlaces() {
         originalPhoto: photo
       }
     })
-    
-    // console.log('useGooglePlaces - Final processed photos:', result)
-    return result
+
+    return result.filter(photo => photo.url !== null)
   }
 
   /**

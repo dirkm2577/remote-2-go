@@ -198,11 +198,11 @@ export default {
   },
   setup(props) {
     const { getPhotoUrl, getPhotoUrls } = useGooglePlaces()
-    
+
     // Component state
     const currentIndex = ref(0)
     const lightboxOpen = ref(false)
-    const imageLoading = ref(true)
+    const imageLoading = ref(false)
     const error = ref(null)
 
     // Computed properties
@@ -232,11 +232,18 @@ export default {
     watch(() => currentIndex.value, () => {
       imageLoading.value = true
       error.value = null
+
+      // Fallback: hide spinner after 3 seconds if load event doesn't fire
+      setTimeout(() => {
+        if (imageLoading.value) {
+          imageLoading.value = false
+        }
+      }, 3000)
     })
 
     watch(() => props.place, () => {
       currentIndex.value = 0
-      imageLoading.value = true
+      imageLoading.value = false
       error.value = null
     }, { deep: true })
 

@@ -8,7 +8,7 @@
         </h1>
         
         <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Discover work-friendly places in Berlin with reliable WiFi, power outlets, and the perfect atmosphere for productivity.
+          Discover work-friendly places in Germany with reliable WiFi, power outlets, and the perfect atmosphere for productivity.
         </p>
         
         <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">

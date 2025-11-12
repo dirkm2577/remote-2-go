@@ -20,6 +20,21 @@
           <div class="bg-white rounded-xl shadow-sm p-6">
             <h2 class="text-lg font-semibold mb-6">Filters</h2>
             
+            <!-- Open Now Filter -->
+            <div class="mb-6 pb-6 border-b border-gray-200">
+              <label class="flex items-center cursor-pointer">
+                <input
+                  v-model="filters.openNow"
+                  type="checkbox"
+                  class="mr-3 text-primary-600 w-5 h-5 rounded"
+                >
+                <div>
+                  <span class="text-sm font-medium text-gray-900">Open Now</span>
+                  <p class="text-xs text-gray-500 mt-0.5">Show only places currently open</p>
+                </div>
+              </label>
+            </div>
+
             <!-- Visit Type Filter -->
             <div class="mb-6">
               <label class="block text-sm font-medium text-gray-700 mb-3">Visit Type</label>
@@ -221,6 +236,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { usePlacesStore } from '../stores/places'
+import { isCurrentlyOpen } from '../types/OpeningHours'
 import NewsletterSignup from '../components/NewsletterSignup.vue'
 import PlacePhotoGallery from '../components/PlacePhotoGallery.vue'
 import OpeningHoursDisplay from '../components/OpeningHoursDisplay.vue'
@@ -233,12 +249,20 @@ const filters = ref({
   noiseLevel: '',
   powerOutlets: '',
   priceLevel: '',
-  city: ''
+  city: '',
+  openNow: false
 })
 
-// Use the places directly from store instead of filtering on client
+// Apply client-side filtering for "Open Now"
 const filteredPlaces = computed(() => {
-  return placesStore.places
+  let places = placesStore.places
+
+  // Apply "Open Now" filter (client-side)
+  if (filters.value.openNow) {
+    places = places.filter(place => isCurrentlyOpen(place.opening_hours))
+  }
+
+  return places
 })
 
 const clearFilters = () => {
@@ -248,7 +272,8 @@ const clearFilters = () => {
     noiseLevel: '',
     powerOutlets: '',
     priceLevel: '',
-    city: ''
+    city: '',
+    openNow: false
   }
   // Refetch places with no filters
   placesStore.fetchPlaces()

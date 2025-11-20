@@ -16,6 +16,8 @@ export interface GooglePlacePhoto {
 
 export interface GooglePlaceResult {
   placeId: string | null
+  latitude: number | null
+  longitude: number | null
   photos: GooglePlacePhoto[]
 }
 
@@ -45,6 +47,8 @@ export class GooglePlacesService {
       console.warn('Google Places API not configured, returning empty result')
       return {
         placeId: null,
+        latitude: null,
+        longitude: null,
         photos: []
       }
     }
@@ -57,7 +61,7 @@ export class GooglePlacesService {
         headers: {
           'Content-Type': 'application/json',
           'X-Goog-Api-Key': this.apiKey,
-          'X-Goog-FieldMask': 'places.id,places.displayName,places.photos'
+          'X-Goog-FieldMask': 'places.id,places.displayName,places.location,places.photos'
         },
         body: JSON.stringify({
           textQuery: searchQuery,
@@ -77,14 +81,18 @@ export class GooglePlacesService {
       if (!data.places || data.places.length === 0) {
         return {
           placeId: null,
+          latitude: null,
+          longitude: null,
           photos: []
         }
       }
 
       const place = data.places[0]
-      
+
       return {
         placeId: place.id,
+        latitude: place.location?.latitude || null,
+        longitude: place.location?.longitude || null,
         photos: place.photos || []
       }
 
@@ -92,6 +100,8 @@ export class GooglePlacesService {
       console.error('Error finding place ID:', error)
       return {
         placeId: null,
+        latitude: null,
+        longitude: null,
         photos: []
       }
     }
@@ -115,29 +125,35 @@ export class GooglePlacesService {
   }
 
   /**
-   * Fetch place photos and return processed data ready for database storage
+   * Fetch place photos and location data, return processed data ready for database storage
    */
   async fetchPlacePhotos(placeName: string, address: string): Promise<{
     google_place_id: string | null
+    latitude: number | null
+    longitude: number | null
     photos: any[]
   }> {
     try {
-      console.log(`Fetching Google Places photos for: ${placeName}, ${address}`)
-      
+      console.log(`Fetching Google Places data for: ${placeName}, ${address}`)
+
       const result = await this.findPlaceId(placeName, address)
-      
+
       const processedPhotos = this.processPhotosForStorage(result.photos)
-      
-      console.log(`Found ${processedPhotos.length} photos for ${placeName}`)
-      
+
+      console.log(`Found ${processedPhotos.length} photos and location (${result.latitude}, ${result.longitude}) for ${placeName}`)
+
       return {
         google_place_id: result.placeId,
+        latitude: result.latitude,
+        longitude: result.longitude,
         photos: processedPhotos
       }
     } catch (error) {
-      console.error('Error fetching place photos:', error)
+      console.error('Error fetching place data:', error)
       return {
         google_place_id: null,
+        latitude: null,
+        longitude: null,
         photos: []
       }
     }

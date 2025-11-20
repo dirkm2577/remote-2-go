@@ -250,23 +250,50 @@ export class PlacesService {
           updated_at: new Date().toISOString()
         }
 
-        // Update coordinates if available from Google Places
+        // Update coordinates and PostGIS location if available from Google Places
         if (placeData.latitude !== null && placeData.longitude !== null) {
           updatePayload.latitude = placeData.latitude
           updatePayload.longitude = placeData.longitude
           console.log(`Found coordinates for ${placeName}: (${placeData.latitude}, ${placeData.longitude})`)
-        }
 
-        // Update the place with Google Places data
-        const { error } = await supabase!
-          .from('places')
-          .update(updatePayload)
-          .eq('id', placeId)
+          // Update the place with Google Places data including PostGIS location
+          const { error } = await supabase!.rpc('update_place_with_location', {
+            p_place_id: placeId,
+            p_google_place_id: placeData.google_place_id,
+            p_photos: placeData.photos,
+            p_latitude: placeData.latitude,
+            p_longitude: placeData.longitude,
+            p_updated_at: new Date().toISOString()
+          })
 
-        if (error) {
-          console.error(`Error updating place ${placeId} with Google data:`, error)
+          if (error) {
+            // Fallback to regular update if RPC doesn't exist
+            console.warn(`RPC update_place_with_location failed, using fallback: ${error.message}`)
+            const { error: fallbackError } = await supabase!
+              .from('places')
+              .update(updatePayload)
+              .eq('id', placeId)
+
+            if (fallbackError) {
+              console.error(`Error updating place ${placeId} with Google data:`, fallbackError)
+            } else {
+              console.log(`Successfully updated place ${placeId} with ${placeData.photos.length} photos (without PostGIS location)`)
+            }
+          } else {
+            console.log(`Successfully updated place ${placeId} with ${placeData.photos.length} photos and PostGIS location`)
+          }
         } else {
-          console.log(`Successfully updated place ${placeId} with ${placeData.photos.length} photos and location data`)
+          // No coordinates - just update photos and google_place_id
+          const { error } = await supabase!
+            .from('places')
+            .update(updatePayload)
+            .eq('id', placeId)
+
+          if (error) {
+            console.error(`Error updating place ${placeId} with Google data:`, error)
+          } else {
+            console.log(`Successfully updated place ${placeId} with ${placeData.photos.length} photos`)
+          }
         }
       } else {
         console.log(`No Google Places data found for: ${placeName}`)

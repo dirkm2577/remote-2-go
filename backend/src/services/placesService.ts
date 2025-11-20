@@ -230,39 +230,51 @@ export class PlacesService {
   }
 
   /**
-   * Fetch Google Places photos and update the place record
+   * Fetch Google Places data (photos and location) and update the place record
    * This runs asynchronously after place creation and doesn't block the approval process
    */
   private async fetchAndUpdatePhotos(placeId: string, placeName: string, address: string): Promise<void> {
     try {
-      console.log(`Fetching photos for place: ${placeName} (${placeId})`)
+      console.log(`Fetching Google Places data for: ${placeName} (${placeId})`)
 
-      // Fetch photos from Google Places API
-      const photoData = await this.googlePlacesService.fetchPlacePhotos(placeName, address)
+      // Fetch photos and location from Google Places API
+      const placeData = await this.googlePlacesService.fetchPlacePhotos(placeName, address)
 
-      if (photoData.google_place_id || photoData.photos.length > 0) {
-        // Update the place with photo information
+      const hasData = placeData.google_place_id || placeData.photos.length > 0 || placeData.latitude !== null
+
+      if (hasData) {
+        // Build update payload
+        const updatePayload: Record<string, any> = {
+          google_place_id: placeData.google_place_id,
+          photos: placeData.photos,
+          updated_at: new Date().toISOString()
+        }
+
+        // Update coordinates if available from Google Places
+        if (placeData.latitude !== null && placeData.longitude !== null) {
+          updatePayload.latitude = placeData.latitude
+          updatePayload.longitude = placeData.longitude
+          console.log(`Found coordinates for ${placeName}: (${placeData.latitude}, ${placeData.longitude})`)
+        }
+
+        // Update the place with Google Places data
         const { error } = await supabase!
           .from('places')
-          .update({
-            google_place_id: photoData.google_place_id,
-            photos: photoData.photos,
-            updated_at: new Date().toISOString()
-          })
+          .update(updatePayload)
           .eq('id', placeId)
 
         if (error) {
-          console.error(`Error updating place ${placeId} with photos:`, error)
+          console.error(`Error updating place ${placeId} with Google data:`, error)
         } else {
-          console.log(`Successfully updated place ${placeId} with ${photoData.photos.length} photos`)
+          console.log(`Successfully updated place ${placeId} with ${placeData.photos.length} photos and location data`)
         }
       } else {
-        console.log(`No photos found for place: ${placeName}`)
+        console.log(`No Google Places data found for: ${placeName}`)
       }
 
     } catch (error) {
-      // Don't throw the error - we don't want photo fetch failures to block place creation
-      console.error(`Error fetching photos for place ${placeId}:`, error)
+      // Don't throw the error - we don't want Google Places fetch failures to block place creation
+      console.error(`Error fetching Google data for place ${placeId}:`, error)
     }
   }
 

@@ -1,11 +1,23 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { Place, PlaceFilters } from '../types/Place'
+
+const API_BASE_URL = 'http://localhost:3001'
 
 export const usePlacesStore = defineStore('places', () => {
   const places = ref<Place[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
+
+  // Computed property to sort places by distance when available
+  const sortedPlacesByDistance = computed(() => {
+    return [...places.value].sort((a, b) => {
+      if (a.distance_meters === undefined && b.distance_meters === undefined) return 0
+      if (a.distance_meters === undefined) return 1
+      if (b.distance_meters === undefined) return -1
+      return a.distance_meters - b.distance_meters
+    })
+  })
 
   const fetchPlaces = async (filters?: PlaceFilters) => {
     loading.value = true
@@ -21,7 +33,7 @@ export const usePlacesStore = defineStore('places', () => {
       if (filters?.priceLevel) params.append('priceLevel', filters.priceLevel)
       if (filters?.city) params.append('city', filters.city)
       
-      const url = `http://localhost:3001/api/places${params.toString() ? '?' + params.toString() : ''}`
+      const url = `${API_BASE_URL}/api/places${params.toString() ? '?' + params.toString() : ''}`
       const response = await fetch(url)
       
       if (!response.ok) {
@@ -153,10 +165,38 @@ export const usePlacesStore = defineStore('places', () => {
     }
   }
 
+  /**
+   * Fetch places near a given location
+   */
+  const fetchNearbyPlaces = async (lat: number, lng: number, radius: number = 5000) => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/places/nearby?lat=${lat}&lng=${lng}&radius=${radius}`
+      )
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      places.value = result.data || []
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to fetch nearby places'
+      console.error('Failed to fetch nearby places:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     places,
     loading,
     error,
-    fetchPlaces
+    sortedPlacesByDistance,
+    fetchPlaces,
+    fetchNearbyPlaces
   }
 })

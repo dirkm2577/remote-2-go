@@ -6,6 +6,7 @@ import placeSubmissionsRouter from './routes/placeSubmissions'
 import newsletterRouter from './routes/newsletter'
 import feedbackRouter from './routes/feedback'
 import adminRouter from './routes/admin'
+import locationRouter from './routes/location'
 
 // Load environment variables
 dotenv.config()
@@ -46,6 +47,8 @@ app.get('/health', (req, res) => {
   })
 })
 
+// Register location routes BEFORE places routes to ensure /places/nearby is matched first
+app.use('/api', locationRouter)
 app.use('/api/places', placesRouter)
 app.use('/api/place-submissions', placeSubmissionsRouter)
 app.use('/api/newsletter', newsletterRouter)

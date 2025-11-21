@@ -35,6 +35,18 @@
               </label>
             </div>
 
+            <!-- City Filter -->
+            <div class="mb-6">
+              <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
+              <input
+                v-model="filters.city"
+                type="text"
+                id="city"
+                class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                placeholder="Enter city name..."
+              />
+            </div>
+
             <!-- Visit Type Filter -->
             <div class="mb-6">
               <label class="block text-sm font-medium text-gray-700 mb-3">Visit Type</label>
@@ -76,18 +88,6 @@
                   <span>Multi-Day Stay</span>
                 </label>
               </div>
-            </div>
-
-            <!-- City Filter -->
-            <div class="mb-6">
-              <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
-              <input
-                v-model="filters.city"
-                type="text"
-                id="city"
-                class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="Enter city name..."
-              />
             </div>
 
             <!-- Other Filters -->

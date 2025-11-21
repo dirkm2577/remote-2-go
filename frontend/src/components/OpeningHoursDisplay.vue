@@ -146,7 +146,8 @@ const statusBadgeClass = computed(() => {
 // Current day info
 const currentDay = computed((): DayOfWeek => {
   const now = new Date()
-  return DAYS_OF_WEEK[now.getDay() === 0 ? 6 : now.getDay() - 1] // Convert Sunday=0 to Sunday=6
+  const dayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1
+  return DAYS_OF_WEEK[dayIndex] ?? 'monday' // Convert Sunday=0 to Sunday=6
 })
 
 const currentDayLabel = computed(() => DAY_LABELS[currentDay.value])

@@ -164,9 +164,13 @@ const validateTimes = (day: DayOfWeek) => {
     return
   }
 
-  const [openHour, openMin] = dayHours.openTime.split(':').map(Number)
-  const [closeHour, closeMin] = dayHours.closeTime.split(':').map(Number)
-  
+  const openParts = dayHours.openTime.split(':').map(Number)
+  const closeParts = dayHours.closeTime.split(':').map(Number)
+  const openHour = openParts[0] ?? 0
+  const openMin = openParts[1] ?? 0
+  const closeHour = closeParts[0] ?? 0
+  const closeMin = closeParts[1] ?? 0
+
   const openMinutes = openHour * 60 + openMin
   const closeMinutes = closeHour * 60 + closeMin
   

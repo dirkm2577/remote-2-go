@@ -202,7 +202,7 @@
 
         <!-- Opening Hours -->
         <div class="border-t pt-6">
-          <OpeningHoursInput v-model="formData.opening_hours" />
+          <OpeningHoursInput v-model="(formData.opening_hours as OpeningHours | null)" />
           <p class="text-xs text-gray-500 mt-2">
             Opening hours are optional but help other remote workers plan their visits.
           </p>
@@ -331,6 +331,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { PlaceSubmission } from '../types/Place'
+import type { OpeningHours } from '../types/OpeningHours'
 import OpeningHoursInput from './OpeningHoursInput.vue'
 
 const router = useRouter()
@@ -393,7 +394,8 @@ const canProceed = computed(() => {
   return true
 })
 
-const getVisitTypeLabel = (value: string) => {
+const getVisitTypeLabel = (value: string | null | undefined) => {
+  if (!value) return ''
   const option = visitTypeOptions.find(opt => opt.value === value)
   return option ? option.label : value
 }
@@ -457,7 +459,11 @@ const resetForm = () => {
     time_limit: null,
     submitter_name: '',
     submitter_email: '',
-    submission_source: 'web_form'
+    submission_source: 'web_form',
+    opening_hours: null
   }
 }
+
+// Export for potential use
+defineExpose({ resetForm })
 </script>

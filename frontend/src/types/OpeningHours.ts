@@ -55,7 +55,9 @@ export const isCurrentlyOpen = (openingHours: OpeningHours | null): boolean => {
   if (!openingHours) return false
 
   const now = new Date()
-  const currentDay = DAYS_OF_WEEK[now.getDay() === 0 ? 6 : now.getDay() - 1] // Convert Sunday=0 to Sunday=6
+  const dayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1 // Convert Sunday=0 to Sunday=6
+  const currentDay = DAYS_OF_WEEK[dayIndex]
+  if (!currentDay) return false
   const currentTime = now.getHours() * 60 + now.getMinutes() // minutes since midnight
 
   const dayHours = openingHours[currentDay]
@@ -64,8 +66,12 @@ export const isCurrentlyOpen = (openingHours: OpeningHours | null): boolean => {
     return false
   }
 
-  const [openHour, openMin] = dayHours.openTime.split(':').map(Number)
-  const [closeHour, closeMin] = dayHours.closeTime.split(':').map(Number)
+  const openParts = dayHours.openTime.split(':').map(Number)
+  const closeParts = dayHours.closeTime.split(':').map(Number)
+  const openHour = openParts[0] ?? 0
+  const openMin = openParts[1] ?? 0
+  const closeHour = closeParts[0] ?? 0
+  const closeMin = closeParts[1] ?? 0
 
   const openMinutes = openHour * 60 + openMin
   const closeMinutes = closeHour * 60 + closeMin
@@ -104,7 +110,9 @@ export const getNextOpeningInfo = (openingHours: OpeningHours | null): { day: st
 
       // If it's today, check if opening time hasn't passed
       if (i === 0) {
-        const [openHour, openMin] = dayHours.openTime.split(':').map(Number)
+        const timeParts = dayHours.openTime.split(':').map(Number)
+        const openHour = timeParts[0] ?? 0
+        const openMin = timeParts[1] ?? 0
         const openMinutes = openHour * 60 + openMin
         const currentMinutes = now.getHours() * 60 + now.getMinutes()
 

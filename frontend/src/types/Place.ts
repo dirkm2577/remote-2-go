@@ -26,6 +26,8 @@ export interface Place {
   // Opening hours
   opening_hours: OpeningHours | null
   hours_last_verified_at: string | null
+  // Distance (populated when fetching nearby places)
+  distance_meters?: number
 }
 
 export interface PlaceFilters {
